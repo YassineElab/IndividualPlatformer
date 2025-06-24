@@ -1,0 +1,7 @@
+#ifndef INDIVIDUALPLATFORMER_TYPES_H
+
+#define INDIVIDUALPLATFORMER_TYPES_H
+
+using Entity = unsigned int;
+
+#endif //INDIVIDUALPLATFORMER_TYPES_H
