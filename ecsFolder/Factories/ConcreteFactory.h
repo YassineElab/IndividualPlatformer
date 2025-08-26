@@ -2,7 +2,6 @@
 
 #include "AbstractFactory.h"
 #include "../Components/Components.h"
-#include <SFML/Graphics.hpp>
 
 #define INDIVIDUALPLATFORMER_CONCRETEFACTORY_H
 
@@ -21,6 +20,7 @@ public:
     Entity createGoal(World& world, float x, float y, float width, float height) override;
     Entity createProjectile(World& world, float x, float y, float width, float height) override;
     Entity createTarget(World& world, float x, float y, float width, float height) override;
+    Entity createEnemy(World& world, float x, float y, float width, float height, sf::Vector2f A, sf::Vector2f B) override;
 };
 
 #endif //INDIVIDUALPLATFORMER_CONCRETEFACTORY_H

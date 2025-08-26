@@ -10,6 +10,30 @@
 
 using namespace std;
 
+class EnemyState;
+
+struct Enemy {
+    EnemyState* state = nullptr;
+    sf::Vector2f anchorA{0.f,0.f};
+    sf::Vector2f anchorB{0.f,0.f};
+    sf::Vector2f respawnPos{0.f,0.f};
+
+    bool  goingToB = true;
+    float seeRadius = 260.f;
+    float attackRange = 60.f;
+    float loseSightTime = 1.f;
+    float timeSinceSeen = 0.f;
+    float maxSpeed = 180.f;
+    float accel = 520.f;
+    float dashSpeed = 340.f;
+    float dashTime = 0.18f;
+    float dashLeft = 0.f;
+    float attackCooldown = 0.8f;
+    float cooldownLeft = 0.f;
+
+    bool respawnRequested = false;
+};
+
 struct Collider {
     sf::FloatRect bounds;
     bool isStatic = false;
@@ -32,6 +56,14 @@ struct Jump {
     float wallJumpHorizontalPush = 7.f;
     float wallJumpControlLockTime = 9.f;
     float wallJumpControlTimer = 0.f;
+    int jumpCount = 0;
+    bool jumpPrev = false;
+
+    int frame1 = 0;
+    int frame1Window = 8;
+    int frame2 = 0;
+    int frame2Window = 8;
+    int maxAirJumps = 1;
 };
 
 struct Spring {
@@ -91,20 +123,27 @@ struct Renderable {
 
     explicit Renderable(sf::Vector2f size, sf::Color color = sf::Color::White) {
         shape.setSize(size);
+        shape.setOrigin(0.f, size.y);
         shape.setFillColor(color);
     }
 
     explicit Renderable(sf::Vector2f size, const std::string& texturePath) {
         shape.setSize(size);
+        shape.setOrigin(0.f, size.y);
 
         texture = std::make_shared<sf::Texture>();
         if (!texture->loadFromFile(texturePath)) {
             shape.setFillColor(sf::Color::Magenta);
         } else {
             shape.setTexture(texture.get());
+            shape.setScale(1.f, -1.f);
         }
     }
 };
+
+struct EnemyTag {};
+
+struct Health { int hp = 1; };
 
 struct PlayerTag {};
 

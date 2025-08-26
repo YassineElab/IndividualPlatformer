@@ -13,6 +13,7 @@
 #include "../Builder/SpikeBuilder.h"
 #include "../Builder/GoalBuilder.h"
 #include "../Builder/TargetBuilder.h"
+#include "../Builder/EnemyBuilder.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/InputSystem.h"
@@ -22,6 +23,7 @@
 #include "../Systems/JumpSystem.h"
 #include "../Systems/ProjectileSystem.h"
 #include "../Systems/ShootSystem.h"
+#include "../Systems/EnemySystem.h"
 #include "../Collision/Quadtree.h"
 
 #define INDIVIDUALPLATFORMER_WORLD_H
@@ -41,6 +43,7 @@ private:
     shared_ptr<JumpSystem> jumpSystem;
     shared_ptr<ProjectileSystem> projectileSystem;
     shared_ptr<ShootSystem> shootSystem;
+    shared_ptr<EnemySystem> enemySystem;
 
     Quadtree collisionTree{0, sf::FloatRect(0, 0, 1200, 600)};
 
@@ -51,6 +54,7 @@ private:
     vector<Entity> spikesE;
     vector<Entity> projectilesE;
     vector<Entity> targetsE;
+    vector<Entity> enemiesE;
     Entity goal;
     queue<Entity> availableEntities;
 
@@ -59,6 +63,7 @@ private:
 
     ProjectileBuilder projectileBuilder;
 
+    sf::FloatRect worldBounds;
 public:
     World(ControllerV& controllerV, AbstractFactory& abstractFactory1, sf::RenderWindow& window1, int levelId);
 
@@ -76,6 +81,7 @@ public:
     Entity buildSpike(float x, float y, float width, float height);
     Entity buildGoal(float x, float y, float width, float height);
     Entity buildTarget(float x, float y, float width, float height);
+    Entity buildEnemy(float x, float y, float width, float height, sf::Vector2f A, sf::Vector2f B);
 
     Entity createEntity();
     void destroyEntity(Entity entity);
@@ -102,6 +108,15 @@ public:
     unordered_map<Entity, TargetTag> targetTags;
     unordered_map<Entity, Target> targets;
     vector<Target> hitTargets;
+    unordered_map<Entity, Enemy> enemies;
+    unordered_map<Entity, EnemyTag> enemyTags;
+    unordered_map<Entity, Health>   healths;
+
+    bool restartRequested = false;
+
+    float frameDt = 0.f;
+
+    void clearAllEntities();
 
     void setNextLevel(bool next);
     bool getNextLevel();

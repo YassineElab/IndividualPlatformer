@@ -26,7 +26,7 @@ void LevelMenuState::update() {
 }
 
 void LevelMenuState::init() {
-    if(!font.loadFromFile("./ecsFolder/Resources/Fonts/arial.ttf") or !background.loadFromFile("./ecsFolder/Resources/Pics/image.jpg")){
+    if(!font.loadFromFile("../ecsFolder/Resources/Fonts/arial.ttf") or !background.loadFromFile("../ecsFolder/Resources/Pics/image.jpg")){
         cout << "File not loaded!" << endl;
     }
 

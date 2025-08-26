@@ -21,6 +21,7 @@ void World::startInit(){
     movementSystem = make_shared<MovementSystem>();
     physicsSystem = make_shared<PhysicsSystem>();
     collisionSystem = make_shared<CollisionSystem>();
+    enemySystem = make_shared<EnemySystem>();
     cameraSystem = make_shared<CameraSystem>();
     jumpSystem = make_shared<JumpSystem>();
     projectileSystem = make_shared<ProjectileSystem>();
@@ -34,29 +35,114 @@ void World::init1() {
     startInit();
     hitTargets.clear();
 
-    player = buildPlayer(50.f, -60.f, 30.f, 30.f);
+    player = buildPlayer(40.f, -200.f, 30.f, 30.f);
 
-    walls.push_back(buildWall(0, -100, 1250, 40));
-    walls.push_back(buildWall(0, 495, 1250, 40));
+    worldBounds = sf::FloatRect(0.f, -300.f, 3600.f, 1100.f);
+    cameraSystem->setBounds(worldBounds);
+    cameraSystem->setZoom(1.25f);
+    cameraSystem->snapToPlayer(*this, window, player);
 
-    walls.push_back(buildWall(-35, -100, 40, 800));
-    walls.push_back(buildWall(1195, -100, 40, 800));
+    walls.push_back(buildWall(0.f,   -300.f, 20.f, 1100.f));
+    walls.push_back(buildWall(3580.f,-300.f, 20.f, 1100.f));
+    walls.push_back(buildWall(0.f,     800.f, 3600.f, 20.f));
 
-    walls.push_back(buildWall(150, -60, 100, 30));
-    walls.push_back(buildWall(250, -60, 100, 60));
-    walls.push_back(buildWall(350, -60, 100, 90));
-    walls.push_back(buildWall(450, -60, 100, 120));
+    float floorY = -220.f;
+    float floorH = 20.f;
 
-    targetsE.push_back(buildTarget(700, 90, 30, 30));
-    targetsE.push_back(buildTarget(650, 380, 30, 30));
-    targetsE.push_back(buildTarget(950, 440, 30, 30));
+    walls.push_back(buildWall(20.f, floorY, 520.f, floorH));
+    float aTop = floorY + floorH;
 
-    walls.push_back(buildWall(800, -20, 20, 720));
-    walls.push_back(buildWall(900, -60, 20, 400));
-    walls.push_back(buildWall(900, 340, 300, 20));
+    float patrolY = aTop + 70.f;
+    Entity eStart = buildEnemy(
+            560.f, patrolY,
+            40.f, 40.f,
+            sf::Vector2f{80.f,  patrolY},
+            sf::Vector2f{500.f, patrolY}
+    );
+    enemies[eStart].seeRadius   = 100.f;
+    enemies[eStart].maxSpeed    = 4.f;
+    enemies[eStart].attackRange = 20.f;
 
-    goal = buildGoal(1100, 360, 60, 60);
+    Entity eStart2 = buildEnemy(
+            560.f, patrolY,
+            40.f, 40.f,
+            sf::Vector2f{590.f,  patrolY},
+            sf::Vector2f{1000.f, patrolY}
+    );
+    enemies[eStart2].seeRadius   = 100.f;
+    enemies[eStart2].maxSpeed    = 4.f;
+    enemies[eStart2].attackRange = 20.f;
+
+    walls.push_back(buildWall(560.f, floorY + 30.f, 80.f, 20.f));
+
+    walls.push_back(buildWall(640.f, floorY, 400.f, floorH));
+    float a2Top = floorY + floorH;
+    targetsE.push_back(buildTarget(740.f, a2Top + 60.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(1040.f, floorY, 220.f, floorH));
+
+    walls.push_back(buildWall(1260.f, floorY - 40.f, 120.f, 40.f));
+    float pTop = (floorY - 40.f) + 40.f;
+    for (float x = 1260.f; x < 1380.f; x += 20.f) {
+        spikesE.push_back(buildSpike(x, pTop, 20.f, 20.f));
+    }
+
+    walls.push_back(buildWall(1380.f, floorY, 240.f, floorH));
+    float b2Top = floorY + floorH;
+    targetsE.push_back(buildTarget(1480.f, b2Top + 50.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(1660.f, floorY, 20.f, 420.f));
+    walls.push_back(buildWall(1860.f, floorY, 20.f, 420.f));
+    walls.push_back(buildWall(1680.f, floorY + 60.f, 160.f, 10.f));
+    walls.push_back(buildWall(1680.f, floorY + 140.f,160.f, 10.f));
+    walls.push_back(buildWall(1680.f, floorY + 220.f,160.f, 10.f));
+    springsE.push_back(buildSpring(1680.f, (floorY + 60.f) + 10.f, 20.f, 20.f));
+    springsE.push_back(buildSpring(1820.f, (floorY + 140.f) + 10.f, 20.f, 20.f));
+    targetsE.push_back(buildTarget(1760.f, (floorY + 220.f) + 10.f + 40.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(1920.f, floorY + 20.f, 420.f, 20.f));
+    float dTop = (floorY + 20.f) + 20.f;
+    walls.push_back(buildWall(1920.f, floorY + 120.f, 420.f, 10.f));
+    walls.push_back(buildWall(1920.f, floorY + 280.f, 420.f, 10.f));
+    for (float x = 1940.f; x < 2320.f; x += 40.f) {
+        spikesE.push_back(buildSpike(x, dTop, 20.f, 20.f));
+    }
+    springsE.push_back(buildSpring(1940.f, dTop, 20.f, 20.f));
+    targetsE.push_back(buildTarget(2240.f, (floorY + 280.f) + 10.f + 40.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(2380.f, floorY, 240.f, 20.f));
+    float e1Top = floorY + 20.f;
+    walls.push_back(buildWall(2380.f, floorY + 100.f, 240.f, 10.f));
+    for (float x = 2380.f; x < 2540.f; x += 20.f) {
+        spikesE.push_back(buildSpike(x, e1Top, 20.f, 20.f));
+    }
+
+    walls.push_back(buildWall(2640.f, floorY + 40.f, 240.f, 20.f));
+    float e2Top = (floorY + 40.f) + 20.f;
+    walls.push_back(buildWall(2640.f, floorY + 150.f, 240.f, 10.f));
+    springsE.push_back(buildSpring(2660.f, e2Top, 20.f, 20.f));
+    targetsE.push_back(buildTarget(2820.f, e2Top + 50.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(2900.f, floorY + 20.f, 400.f, 20.f));
+    float fTop = (floorY + 20.f) + 20.f;
+    walls.push_back(buildWall(2900.f, floorY + 110.f, 400.f, 10.f));
+    for (float x = 2920.f; x < 3280.f; x += 40.f) {
+        spikesE.push_back(buildSpike(x, (floorY + 110.f) + 10.f, 20.f, 20.f));
+    }
+    springsE.push_back(buildSpring(3020.f, fTop, 20.f, 20.f));
+    targetsE.push_back(buildTarget(3180.f, fTop + 60.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(3340.f, floorY, 20.f, 360.f));
+    walls.push_back(buildWall(3520.f, floorY, 20.f, 360.f));
+    walls.push_back(buildWall(3360.f, floorY + 60.f, 160.f, 10.f));
+    walls.push_back(buildWall(3360.f, floorY + 140.f,160.f, 10.f));
+    springsE.push_back(buildSpring(3360.f, (floorY + 60.f) + 10.f, 20.f, 20.f));
+    targetsE.push_back(buildTarget(3440.f, (floorY + 140.f) + 10.f + 40.f, 30.f, 30.f));
+    walls.push_back(buildWall(3400.f, floorY + 260.f, 140.f, 10.f));
+    goal = buildGoal(3460.f, (floorY + 260.f) + 10.f, 40.f, 40.f);
 }
+
+
 
 void World::init2() {
     startInit();
@@ -230,6 +316,7 @@ void World::init3() {
 }
 
 void World::init() {
+    clearAllEntities();
     switch (levelId) {
         case 1: init1(); break;
         case 2: init2(); break;
@@ -243,16 +330,23 @@ void World::update() {
 
     this->stopwatch->nextFrame();
     float movementMul = this->stopwatch->getMovementMultiplier();
+    frameDt = movementMul;
 
     if (inputSystem) inputSystem->update(*this);
+    if (enemySystem)  enemySystem->update(*this, movementMul);
     if (movementSystem) movementSystem->update(*this, movementMul);
     if (physicsSystem) physicsSystem->update(*this, movementMul);
-    if (jumpSystem) jumpSystem->update(*this);
     if (projectileSystem) projectileSystem->update(*this, movementMul);
     if (shootSystem) shootSystem->update(*this, movementMul);
     if (collisionSystem) collisionSystem->update(*this, collisionTree);
+    if (jumpSystem) jumpSystem->update(*this);
     if (cameraSystem) cameraSystem->update(*this, window, player);
     if (renderSystem) renderSystem->update(*this, window);
+
+    if (restartRequested) {
+        restartRequested = false;
+        init();
+    }
 }
 
 void World::gameLoop() {
@@ -321,15 +415,15 @@ Entity World::buildSpring(float x, float y, float width, float height) {
 }
 
 Entity World::buildSpike(float x, float y, float width, float height) {
-    Entity spring = SpikeBuilder(*this, abstractFactory)
+    Entity spike = SpikeBuilder(*this, abstractFactory)
             .makeSpike(x, y, width, height)
             .build();
 
     if (collisionSystem) {
-        collisionSystem->AddEntity(spring, *this);
+        collisionSystem->AddEntity(spike, *this);
     }
 
-    return spring;
+    return spike;
 }
 
 Entity World::buildGoal(float x, float y, float width, float height) {
@@ -356,6 +450,17 @@ Entity World::buildTarget(float x, float y, float width, float height) {
     return target;
 }
 
+Entity World::buildEnemy(float x, float y, float width, float height, sf::Vector2f A, sf::Vector2f B) {
+    Entity enemy = EnemyBuilder(*this, abstractFactory)
+            .makeEnemy(x, y, width, height, A, B)
+            .build();
+
+    if (collisionSystem) collisionSystem->AddEntity(enemy, *this);
+    if (enemySystem)     enemySystem->AddEntity(enemy, *this);
+
+    return enemy;
+}
+
 bool World::getNextLevel() {
     return goNextLevel;
 }
@@ -372,4 +477,41 @@ void World::destroyEntity(Entity entity) {
 
     availableEntities.push(entity);
 }
+
+void World::clearAllEntities() {
+    positions.clear();
+    velocities.clear();
+    sizes.clear();
+    transforms.clear();
+    colliders.clear();
+    gravities.clear();
+    movementInputs.clear();
+    jumps.clear();
+    renderables.clear();
+
+    springs.clear();
+    spikes.clear();
+    targets.clear();
+    projectiles.clear();
+    enemies.clear();
+    healths.clear();
+
+    wallTags.clear();
+    springTags.clear();
+    spikeTags.clear();
+    targetTags.clear();
+    goalTags.clear();
+    enemyTags.clear();
+    playerTags.clear();
+
+    hitTargets.clear();
+    walls.clear();
+    springsE.clear();
+    spikesE.clear();
+    targetsE.clear();
+
+    while (!availableEntities.empty()) availableEntities.pop();
+    for (Entity id = 0; id < 200; ++id) availableEntities.push(id);
+}
+
 

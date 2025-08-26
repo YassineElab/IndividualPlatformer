@@ -8,20 +8,25 @@
 
 class World;
 
-class CameraSystem : public System {
+class CameraSystem {
 public:
-    void init(sf::RenderWindow& window) {
-        if (!window.isOpen()) return;
+    void init(sf::RenderWindow& window);
+    void setBounds(const sf::FloatRect& worldBounds);
 
-        cameraView = window.getDefaultView();
-        cameraView.setSize(1200.f, 600.f);
-        window.setView(cameraView);
-    }
+    void setZoom(float z);
 
+    void snapToPlayer(World& world, sf::RenderWindow& window, Entity target);
     void update(World& world, sf::RenderWindow& window, Entity target);
 
 private:
-    sf::View cameraView;
+    sf::View cameraView{};
+    sf::Vector2f baseViewSize{0.f,0.f};
+    float zoom{1.f};
+
+    sf::FloatRect bounds{0.f,0.f,0.f,0.f};
+    bool hasBounds{false};
+
+    float smooth{0.22f};
 };
 
 #endif //INDIVIDUALPLATFORMER_CAMERASYSTEM_H
