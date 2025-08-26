@@ -26,6 +26,9 @@ private:
     sf::FloatRect bounds{0.f,0.f,0.f,0.f};
     bool hasBounds{false};
 
+    float anchorX{0.25f};
+    float anchorY{0.50f};
+
     float smooth{0.22f};
 };
 

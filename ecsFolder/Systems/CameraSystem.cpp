@@ -14,7 +14,7 @@ void CameraSystem::setBounds(const sf::FloatRect& worldBounds) {
 }
 
 void CameraSystem::setZoom(float z) {
-    zoom = max(0.1f, z);
+    zoom = std::max(0.1f, z);
     cameraView.setSize(baseViewSize.x, -baseViewSize.y);
     cameraView.zoom(1.f / zoom);
 }
@@ -23,6 +23,9 @@ void CameraSystem::snapToPlayer(World& world, sf::RenderWindow& window, Entity t
     auto t = world.positions.find(target);
     if (t == world.positions.end()) return;
     sf::Vector2f c(t->second.x, t->second.y);
+    sf::Vector2f viewSize = { abs(cameraView.getSize().x), abs(cameraView.getSize().y) };
+    sf::Vector2f start{ (0.5f - anchorX) * viewSize.x, (0.5f - anchorY) * viewSize.y };
+    c += start;
     cameraView.setCenter(c);
     window.setView(cameraView);
 }
@@ -32,8 +35,11 @@ void CameraSystem::update(World& world, sf::RenderWindow& window, Entity target)
     if (t == world.positions.end()) return;
     sf::Vector2f targetPos(t->second.x, t->second.y);
 
+    sf::Vector2f viewSize = { abs(cameraView.getSize().x), abs(cameraView.getSize().y) };
+    sf::Vector2f start{ (0.5f - anchorX) * viewSize.x, (0.5f - anchorY) * viewSize.y };
+
     sf::Vector2f center = cameraView.getCenter();
-    sf::Vector2f desired = targetPos;
+    sf::Vector2f desired = targetPos + start;;
     sf::Vector2f smoothed = center + (desired - center) * smooth;
 
     cameraView.setCenter(smoothed);
