@@ -46,13 +46,11 @@ void World::init1() {
     walls.push_back(buildWall(3580.f,-250.f, 20.f, 1100.f));
     walls.push_back(buildWall(0.f,     800.f, 3600.f, 20.f));
 
-    float floorY = -220.f;
+    walls.push_back(buildWall(20.f, -220.f, 3600.f, 20.f));
 
-    walls.push_back(buildWall(20.f, floorY, 800.f, 20.f));
-
-    walls.push_back(buildWall(100.f, floorY, 30.f, 80.f));
-    walls.push_back(buildWall(150.f, floorY, 30.f, 160.f));
-    walls.push_back(buildWall(200.f, floorY, 30.f, 240.f));
+    walls.push_back(buildWall(100.f, -220.f, 30.f, 80.f));
+    walls.push_back(buildWall(150.f, -220.f, 30.f, 160.f));
+    walls.push_back(buildWall(200.f, -220.f, 30.f, 240.f));
 
     Entity eStart = buildEnemy(
             270.f, -200.f,
