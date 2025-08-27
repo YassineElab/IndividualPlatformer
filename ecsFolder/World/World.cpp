@@ -42,104 +42,67 @@ void World::init1() {
     cameraSystem->setZoom(1.25f);
     cameraSystem->snapToPlayer(*this, window, player);
 
-    walls.push_back(buildWall(0.f,   -300.f, 20.f, 1100.f));
-    walls.push_back(buildWall(3580.f,-300.f, 20.f, 1100.f));
+    walls.push_back(buildWall(0.f,   -220.f, 20.f, 1100.f));
+    walls.push_back(buildWall(3580.f,-250.f, 20.f, 1100.f));
     walls.push_back(buildWall(0.f,     800.f, 3600.f, 20.f));
 
     float floorY = -220.f;
-    float floorH = 20.f;
 
-    walls.push_back(buildWall(20.f, floorY, 520.f, floorH));
-    float aTop = floorY + floorH;
+    walls.push_back(buildWall(20.f, floorY, 800.f, 20.f));
 
-    float patrolY = aTop + 70.f;
+    walls.push_back(buildWall(100.f, floorY, 30.f, 80.f));
+    walls.push_back(buildWall(150.f, floorY, 30.f, 160.f));
+    walls.push_back(buildWall(200.f, floorY, 30.f, 240.f));
+
     Entity eStart = buildEnemy(
-            560.f, patrolY,
+            270.f, -200.f,
             40.f, 40.f,
-            sf::Vector2f{80.f,  patrolY},
-            sf::Vector2f{500.f, patrolY}
+            sf::Vector2f{270.f,  -200},
+            sf::Vector2f{270.f, 250}
     );
     enemies[eStart].seeRadius   = 100.f;
     enemies[eStart].maxSpeed    = 4.f;
     enemies[eStart].attackRange = 20.f;
 
+    springsE.push_back(buildSpring(500.f, -200, 20.f, 20.f));
+    walls.push_back(buildWall(520.f, -100, 100.f, 20.f));
+    walls.push_back(buildWall(680.f, -40, 20.f, 100.f));
+    walls.push_back(buildWall(500.f, 40, 100.f, 20.f));
+
+    springsE.push_back(buildSpring(520.f, 60.f, 20.f, 20.f));
+    walls.push_back(buildWall(590.f, 150.f, 20.f, 700.f));
+    walls.push_back(buildWall(700.f, 120.f, 20.f, 550.f));
+    walls.push_back(buildWall(700.f, 670.f, 300.f, 20.f));
+
+    walls.push_back(buildWall(1100.f, 650.f, 20.f, 60.f));
+
+    springsE.push_back(buildSpring(1000.f, 500.f, 20.f, 20.f));
+
+    targetsE.push_back(buildTarget(930.f, 550.f, 30.f, 30.f));
+
+    walls.push_back(buildWall(1100.f, 710.f, 100.f, 20.f));
+
+    targetsE.push_back(buildTarget(1350.f, 710.f, 30.f, 30.f));
+
+    spikesE.push_back(buildSpike(800, 690, 20.f, 20.f));
+    spikesE.push_back(buildSpike(800, 780, 20.f, 20.f));
+
+    spikesE.push_back(buildSpike(900, 690, 20.f, 20.f));
+    spikesE.push_back(buildSpike(900, 780, 20.f, 20.f));
+
     Entity eStart2 = buildEnemy(
-            560.f, patrolY,
+            170.f, 600.f,
             40.f, 40.f,
-            sf::Vector2f{590.f,  patrolY},
-            sf::Vector2f{1000.f, patrolY}
+            sf::Vector2f{170.f,  550.f},
+            sf::Vector2f{570.f, 550.f}
     );
     enemies[eStart2].seeRadius   = 100.f;
     enemies[eStart2].maxSpeed    = 4.f;
     enemies[eStart2].attackRange = 20.f;
 
-    walls.push_back(buildWall(560.f, floorY + 30.f, 80.f, 20.f));
+    targetsE.push_back(buildTarget(450.f, 650.f, 30.f, 30.f));
 
-    walls.push_back(buildWall(640.f, floorY, 400.f, floorH));
-    float a2Top = floorY + floorH;
-    targetsE.push_back(buildTarget(740.f, a2Top + 60.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(1040.f, floorY, 220.f, floorH));
-
-    walls.push_back(buildWall(1260.f, floorY - 40.f, 120.f, 40.f));
-    float pTop = (floorY - 40.f) + 40.f;
-    for (float x = 1260.f; x < 1380.f; x += 20.f) {
-        spikesE.push_back(buildSpike(x, pTop, 20.f, 20.f));
-    }
-
-    walls.push_back(buildWall(1380.f, floorY, 240.f, floorH));
-    float b2Top = floorY + floorH;
-    targetsE.push_back(buildTarget(1480.f, b2Top + 50.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(1660.f, floorY, 20.f, 420.f));
-    walls.push_back(buildWall(1860.f, floorY, 20.f, 420.f));
-    walls.push_back(buildWall(1680.f, floorY + 60.f, 160.f, 10.f));
-    walls.push_back(buildWall(1680.f, floorY + 140.f,160.f, 10.f));
-    walls.push_back(buildWall(1680.f, floorY + 220.f,160.f, 10.f));
-    springsE.push_back(buildSpring(1680.f, (floorY + 60.f) + 10.f, 20.f, 20.f));
-    springsE.push_back(buildSpring(1820.f, (floorY + 140.f) + 10.f, 20.f, 20.f));
-    targetsE.push_back(buildTarget(1760.f, (floorY + 220.f) + 10.f + 40.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(1920.f, floorY + 20.f, 420.f, 20.f));
-    float dTop = (floorY + 20.f) + 20.f;
-    walls.push_back(buildWall(1920.f, floorY + 120.f, 420.f, 10.f));
-    walls.push_back(buildWall(1920.f, floorY + 280.f, 420.f, 10.f));
-    for (float x = 1940.f; x < 2320.f; x += 40.f) {
-        spikesE.push_back(buildSpike(x, dTop, 20.f, 20.f));
-    }
-    springsE.push_back(buildSpring(1940.f, dTop, 20.f, 20.f));
-    targetsE.push_back(buildTarget(2240.f, (floorY + 280.f) + 10.f + 40.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(2380.f, floorY, 240.f, 20.f));
-    float e1Top = floorY + 20.f;
-    walls.push_back(buildWall(2380.f, floorY + 100.f, 240.f, 10.f));
-    for (float x = 2380.f; x < 2540.f; x += 20.f) {
-        spikesE.push_back(buildSpike(x, e1Top, 20.f, 20.f));
-    }
-
-    walls.push_back(buildWall(2640.f, floorY + 40.f, 240.f, 20.f));
-    float e2Top = (floorY + 40.f) + 20.f;
-    walls.push_back(buildWall(2640.f, floorY + 150.f, 240.f, 10.f));
-    springsE.push_back(buildSpring(2660.f, e2Top, 20.f, 20.f));
-    targetsE.push_back(buildTarget(2820.f, e2Top + 50.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(2900.f, floorY + 20.f, 400.f, 20.f));
-    float fTop = (floorY + 20.f) + 20.f;
-    walls.push_back(buildWall(2900.f, floorY + 110.f, 400.f, 10.f));
-    for (float x = 2920.f; x < 3280.f; x += 40.f) {
-        spikesE.push_back(buildSpike(x, (floorY + 110.f) + 10.f, 20.f, 20.f));
-    }
-    springsE.push_back(buildSpring(3020.f, fTop, 20.f, 20.f));
-    targetsE.push_back(buildTarget(3180.f, fTop + 60.f, 30.f, 30.f));
-
-    walls.push_back(buildWall(3340.f, floorY, 20.f, 360.f));
-    walls.push_back(buildWall(3520.f, floorY, 20.f, 360.f));
-    walls.push_back(buildWall(3360.f, floorY + 60.f, 160.f, 10.f));
-    walls.push_back(buildWall(3360.f, floorY + 140.f,160.f, 10.f));
-    springsE.push_back(buildSpring(3360.f, (floorY + 60.f) + 10.f, 20.f, 20.f));
-    targetsE.push_back(buildTarget(3440.f, (floorY + 140.f) + 10.f + 40.f, 30.f, 30.f));
-    walls.push_back(buildWall(3400.f, floorY + 260.f, 140.f, 10.f));
-    goal = buildGoal(3460.f, (floorY + 260.f) + 10.f, 40.f, 40.f);
+    goal = buildGoal(1300.f, 500, 40.f, 40.f);
 }
 
 
